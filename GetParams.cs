@@ -35,7 +35,7 @@ namespace userScript
                 for (int j = 0; j < paramList.Count; j++)
                 {
                     var paramName = paramList[j].ToLower();
-                    if (args[i].ToLower() == prefix1 + paramName || args[i] == prefix2 + paramName)
+                    if (args[i].ToLower() == prefix1 + paramName || args[i].ToLower() == prefix2 + paramName)
                     {
                         Parameters.Add(paramList[j], args[i + 1]);
                         paramList.RemoveAt(j);
