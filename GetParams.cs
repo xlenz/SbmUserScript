@@ -82,8 +82,6 @@ namespace userScript
                               "-ssoPort     | /ssoPort     OPTIONAL: SSO port. Default 8085\n" +
                               "-useHttps    | /useHttps    OPTIONAL: true | false. Default false\n" +
                               "\n\n" +
-                              "Use -generateSampleJsonFile | /generateSampleJsonFile to create sampleJsonFile.json example file." +
-                              "\n\n" +
                               "Example:\n/sbmHostPort stl-qa-oalmt1 /u admin /p \"\" -json rlc52users.json" +
                               "\n\nand some more complicated:\n" +
                               "-sbmHostPort orl-qa-vstst94.qa.ldaptest.net:443 -u LDAP_User1 -p !Mtdnp1111 -ssoHost orl-qa-vstst97.qa.ldaptest.net -ssoPort 8243 -useHttps true -json rlc52users.json" +
