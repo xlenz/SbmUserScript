@@ -22,13 +22,13 @@
     "setUserRoles": [{
         "login": "dave",
         "roles": [{
-            "projects": ["Release Train", "Release Package"],
+            "projects": ["Release Train Projects", "Release Packages Projects"],
             "roleList": {
                 "Administrator": false,
                 "User": true
             }
         }, {
-            "projects": ["Approvals"],
+            "projects": ["Approvals Projects"],
             "roleList": {
                 "User": true
             }
@@ -36,7 +36,7 @@
     }, {
         "login": "bob",
         "roles": [{
-            "projects": ["Release Package"],
+            "projects": ["Release Packages Projects", "Some missing proj"],
             "roleList": {
                 "Engineer": true
             }
@@ -44,7 +44,7 @@
     }, {
         "login": "admin",
         "roles": [{
-            "projects": ["Release Train", "Release Package", "Approvals"],
+            "projects": ["Release Train Projects", "Release Packages Projects", "Approvals Projects"],
             "roleList": {
                 "*": true
             }
@@ -54,7 +54,7 @@
     "setGroupRoles": [{
         "group": "Everyone",
         "roles": [{
-            "projects": ["Release Train", "Release Package", "Approvals"],
+            "projects": ["Release Train Projects", "Release Packages Projects", "Approvals Projects"],
             "roleList": {
                 "User": true
             }
@@ -62,7 +62,7 @@
     }, {
         "group": "Group1",
         "roles": [{
-            "projects": ["Approvals"],
+            "projects": ["Approvals Projects", "Some Missing Project"],
             "roleList": {
                 "User": false,
                 "Administrator": true
