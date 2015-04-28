@@ -1,0 +1,80 @@
+{
+    "createUpdateUsers": [{
+        "login": "admin",
+        "password": ""
+    }, {
+        "login": "dave",
+        "name": "Dave RM",
+        "password": "password",
+        "email": "dave@email.com",
+        "emailCc": "daveBak@email.com"
+    }, {
+        "login": "bob",
+        "password": "password"
+    }],
+
+    "createGroups": [{
+        "name": "Group1"
+    }, {
+        "name": "Group2"
+    }],
+
+    "setUserRoles": [{
+        "login": "dave",
+        "roles": [{
+            "projects": ["Release Train", "Release Package"],
+            "roleList": {
+                "Administrator": false,
+                "User": true
+            }
+        }, {
+            "projects": ["Approvals"],
+            "roleList": {
+                "User": true
+            }
+        }]
+    }, {
+        "login": "bob",
+        "roles": [{
+            "projects": ["Release Package"],
+            "roleList": {
+                "Engineer": true
+            }
+        }]
+    }, {
+        "login": "admin",
+        "roles": [{
+            "projects": ["Release Train", "Release Package", "Approvals"],
+            "roleList": {
+                "*": true
+            }
+        }]
+    }],
+
+    "setGroupRoles": [{
+        "group": "Everyone",
+        "roles": [{
+            "projects": ["Release Train", "Release Package", "Approvals"],
+            "roleList": {
+                "User": true
+            }
+        }]
+    }, {
+        "group": "Group1",
+        "roles": [{
+            "projects": ["Approvals"],
+            "roleList": {
+                "User": false,
+                "Administrator": true
+            }
+        }]
+    }],
+
+    "addUsersToGroups": [{
+        "groups": ["Everyone"],
+        "userLogins": ["admin", "bob"]
+    }, {
+        "groups": ["Group1", "Group2"],
+        "userLogins": ["dave", "bob"]
+    }]
+}
