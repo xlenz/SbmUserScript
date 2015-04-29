@@ -171,7 +171,13 @@ namespace userScript.WebAdmin
                 {
                     int tmpRole;
                     if (project.Roles.TryGetValue(role.Key, out tmpRole))
+                    {
                         UpdatePermissionsGrantLists(tmpRole, role.Value, role.Key, proj, ref permissionIds, ref grantList);
+                    }
+                    else
+                    {
+                        Log.Warn(string.Format("Role '{0}' not found for project '{1}'", role.Key, proj));
+                    }
                 }
             //prepare json struct
             int count = permissionIds.Count;
@@ -184,7 +190,14 @@ namespace userScript.WebAdmin
                 var data = JsonConvert.SerializeObject(jsonStruct);
                 WebReq.Make(jsonUrl, ssoBase64: _ssoBase64, data: data);
             }
-            else Log.Warn(string.Format("No roles found for '" + proj + "'"));
+            else
+            {
+                Log.Warn(string.Format("No following roles found for '" + proj + "': "));
+                foreach (var inputRole in inputRoles)
+                {
+                    Log.Warn(" - " + inputRole.Key);
+                }
+            }
         }
 
         private void UpdatePermissionsGrantLists(int permissionId, int granted, string roleName, string projectName, ref List<int> permissionIds,

@@ -13,7 +13,7 @@ namespace userScript
             {
                 return;
             }
-            Log.Ok("ARGS: Done.");
+            Log.Ok("Provided arguments validated.");
 
             //read json and auth
             var webAdmin = new WebAdmin.WebAdmin();
@@ -22,6 +22,9 @@ namespace userScript
             Log.Info("Creating/updating users/groups/roles/membership...");
             try
             {
+                //users and groups should be created before setting roles.
+                //users and groups should be created before adding users to groups.
+
                 //create/update users
                 webAdmin.CreateUpdateUsers();
                 //create groups
@@ -33,8 +36,7 @@ namespace userScript
                 //set group roles
                 webAdmin.SetGroupRoles();
 
-                Log.Ok("USR: Done.");
-                Log.Info("All done.");
+                Log.Ok("All done.");
             }
             catch (Exception e)
             {

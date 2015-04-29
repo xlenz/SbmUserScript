@@ -25,6 +25,8 @@
             "projects": ["Release Train Projects", "Release Packages Projects"],
             "roleList": {
                 "Administrator": false,
+                "missingRole1": false,
+                "missingRole2": true,
                 "User": true
             }
         }, {
@@ -38,7 +40,7 @@
         "roles": [{
             "projects": ["Release Packages Projects", "Some missing proj"],
             "roleList": {
-                "Engineer": true
+                "missingRole": true
             }
         }]
     }, {

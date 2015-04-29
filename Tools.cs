@@ -23,7 +23,8 @@ namespace userScript
             var val = GetJsonValueNullable(json, key);
             if (val == null)
             {
-                throw new Exception("Failed to obtain key: " + key);
+                Log.Err(json);
+                throw new Exception("Failed to obtain required property: " + key);
             }
             return val;
         }

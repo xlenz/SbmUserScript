@@ -13,7 +13,7 @@ namespace userScript
     /// </summary>
     public class SSO
     {
-        private const string UserAgent = @"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36";
+        private const string UserAgent = @"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36";
         private readonly string _ssoToken;
 
         /// <summary>

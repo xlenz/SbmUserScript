@@ -44,7 +44,7 @@ namespace userScript.WebAdmin
                 _isInit = false;
                 return;
             }
-            Log.Ok("JSON: Done.");
+            Log.Ok("Json found and parsed.");
 
             //auth
             Log.Info("Getting SSO Token...");
@@ -63,7 +63,7 @@ namespace userScript.WebAdmin
                 _isInit = false;
                 return;
             }
-            Log.Ok("SSO: Done.");
+            Log.Ok("SSO Token obtained.");
             _jsonClient = new JsonClient(ssoBase64);
         }
 
@@ -74,12 +74,9 @@ namespace userScript.WebAdmin
 
         public void CreateUpdateUsers()
         {
-            var createUpdateUsers = _inputJson["createUpdateUsers"];
-            if (createUpdateUsers == null)
-            {
-                Log.Info("No users will be created or updated.");
-                return;
-            }
+            var createUpdateUsers = GetInputProperty("createUpdateUsers", "No users will be created or updated.");
+            if (createUpdateUsers == null) return;
+
             foreach (var user in createUpdateUsers)
             {
                 var login = Tools.GetJsonValue(user, "login");
@@ -90,12 +87,9 @@ namespace userScript.WebAdmin
 
         public void CreateGroups()
         {
-            var createGroups = _inputJson["createGroups"];
-            if (createGroups == null)
-            {
-                Log.Info("No groups will be created.");
-                return;
-            }
+            var createGroups = GetInputProperty("createGroups", "No groups will be created.");
+            if (createGroups == null) return;
+
             foreach (var group in createGroups)
             {
                 _jsonClient.SetGroup(Tools.GetJsonValue(group, "name"));
@@ -104,16 +98,14 @@ namespace userScript.WebAdmin
 
         public void AddUsersToGroups()
         {
-            var addUsersToGroups = _inputJson["addUsersToGroups"];
-            if (addUsersToGroups == null)
-            {
-                Log.Info("No users will be added to groups.");
-                return;
-            }
+            var addUsersToGroups = GetInputProperty("addUsersToGroups", "No users will be added to groups.");
+            if (addUsersToGroups == null) return;
+
             foreach (var groupMembership in addUsersToGroups)
             {
                 if (groupMembership["groups"] == null || groupMembership["userLogins"] == null)
                 {
+                    Log.Err(groupMembership);
                     throw new Exception("AddUsersToGroups: Both 'groups' and 'userLogins' properties are required.");
                 }
                 var groups = groupMembership["groups"].Values<string>().ToArray();
@@ -135,20 +127,26 @@ namespace userScript.WebAdmin
 
         public void SetUserRoles()
         {
-            var setUserRoles = _inputJson["setUserRoles"];
-            if (setUserRoles == null)
-            {
-                Log.Info("No roles will be set for users.");
-                return;
-            }
+            SetRoles("users", "setUserRoles", "login");
+        }
 
-            foreach (var setUserRole in setUserRoles)
+        public void SetGroupRoles()
+        {
+            SetRoles("groups", "setGroupRoles", "group");
+        }
+
+        private void SetRoles(string itemType, string inputJsonKey, string key)
+        {
+            var setRoles = GetInputProperty(inputJsonKey, "No roles will be set for " + itemType);
+            if (setRoles == null) return;
+
+            foreach (var setRole in setRoles)
             {
-                var login = Tools.GetJsonValue(setUserRole, "login");
-                var roles = setUserRole["roles"];
+                var itemName = Tools.GetJsonValue(setRole, key);
+                var roles = setRole["roles"];
                 if (!roles.Children().Any())
                 {
-                    Log.Warn("SetUserRoles: No roles were provided for login: " + login);
+                    Log.Warn(string.Format("SetRoles: No roles were provided for {0}: {1}", key, itemName));
                     continue;
                 }
 
@@ -156,7 +154,8 @@ namespace userScript.WebAdmin
                 {
                     if (role["projects"] == null)
                     {
-                        throw new Exception("SetUserRoles: 'projects' is a required field.");
+                        Log.Err(role);
+                        throw new Exception("SetRoles: 'projects' is a required field.");
                     }
                     var projects = role["projects"].Values<string>().ToArray();
                     var roleList = role["roleList"];
@@ -165,66 +164,40 @@ namespace userScript.WebAdmin
                         var rolesDict = ParseRoles(roleList);
                         if (rolesDict.Count == 0)
                         {
-                            Log.Warn("SetUserRoles: No roles will be set for login '" + login + "'. See previous warnings.");
+                            Log.Warn(string.Format("SetRoles: No roles will be set for {0} '{1}'. See previous warnings.", key, itemName));
                         }
                         else
                         {
-                            _jsonClient.SetUserRoles(login, projects, rolesDict);
+                            switch (itemType)
+                            {
+                                case "groups":
+                                    _jsonClient.SetGroupRoles(itemName, projects, rolesDict);
+                                    break;
+                                case "users":
+                                    _jsonClient.SetUserRoles(itemName, projects, rolesDict);
+                                    break;
+                                default:
+                                    throw new Exception("Invalid item type provided: " + itemType);
+                            }
                         }
                     }
                     else
                     {
-                        Log.Warn("SetUserRoles: Either no projects or users were provided for login: " + login);
+                        Log.Warn(string.Format("SetRoles: Either no projects or users were provided for {0}: {1}", key, itemName));
                     }
                 }
             }
         }
 
-        public void SetGroupRoles()
+        private IEnumerable<JToken> GetInputProperty(string key, string notFoundMessage)
         {
-            var setGroupRoles = _inputJson["setGroupRoles"];
-            if (setGroupRoles == null || !setGroupRoles.Children().Any())
+            var jToken = _inputJson[key];
+            if (jToken == null || !jToken.Children().Any())
             {
-                Log.Info("No roles will be set for groups.");
-                return;
+                Log.Info(notFoundMessage);
+                return null;
             }
-
-            foreach (var setGroupRole in setGroupRoles)
-            {
-                var group = Tools.GetJsonValue(setGroupRole, "group");
-                var roles = setGroupRole["roles"];
-                if (!roles.Children().Any())
-                {
-                    Log.Warn("SetGroupRoles: No roles were provided for group: " + group);
-                    continue;
-                }
-
-                foreach (var role in roles)
-                {
-                    if (role["projects"] == null)
-                    {
-                        throw new Exception("SetUserRoles: 'projects' is a required field.");
-                    }
-                    var projects = role["projects"].Values<string>().ToArray();
-                    var roleList = role["roleList"];
-                    if (projects.Length > 0 && roleList != null && role.Children().Any())
-                    {
-                        var rolesDict = ParseRoles(roleList);
-                        if (rolesDict.Count == 0)
-                        {
-                            Log.Warn("SetGroupRoles: No roles will be set for group '" + group + "'. See previous warnings.");
-                        }
-                        else
-                        {
-                            _jsonClient.SetGroupRoles(group, projects, rolesDict);
-                        }
-                    }
-                    else
-                    {
-                        Log.Warn("SetGroupRoles: Either no projects or users were provided for group: " + group);
-                    }
-                }
-            }
+            return jToken;
         }
 
         private static Dictionary<string, int> ParseRoles(IEnumerable<JToken> roleList)
