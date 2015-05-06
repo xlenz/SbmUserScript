@@ -6,8 +6,8 @@
         public static string User;
         public static string Password;
         public static string PathToJson;
-        public static string SSOHost = null;
-        public static string SSOPort = "8085";
+        public static string OEHost = null;
+        public static string OEPort = "8085";
         public static bool UseHttps = false;
 
         public static bool AreParamsValid()
@@ -18,10 +18,14 @@
                 Log.Err("One or more required fields are not valid or were not provided.");
                 valid = false;
             }
-            if ((SSOHost != null && SSOHost == string.Empty) || string.IsNullOrEmpty(SSOPort))
+            if ((OEHost != null && OEHost == string.Empty) || string.IsNullOrEmpty(OEPort))
             {
                 Log.Err("Invalid value for SSO host or port.");
                 valid = false;
+            }
+            if (OEHost == null)
+            {
+                OEHost = SBMHostPort.Split(':')[0];
             }
 
             return valid;

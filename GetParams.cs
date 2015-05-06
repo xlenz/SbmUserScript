@@ -11,7 +11,7 @@ namespace userScript
 
         public static void ReadParams(string[] args)
         {
-            var paramList = "sbmHostPort,u,p,ssoHost,ssoPort,useHttps,json".Split(',').ToList();
+            var paramList = "sbmHostPort,u,p,oeHost,oePort,useHttps,json".Split(',').ToList();
             const string prefix1 = "/";
             const string prefix2 = "-";
 
@@ -55,12 +55,12 @@ namespace userScript
             Params.User = Tools.TryGetDictValue(Parameters, "u");
             Params.Password = Tools.TryGetDictValue(Parameters, "p");
             Params.PathToJson = Tools.TryGetDictValue(Parameters, "json");
-            Params.SSOHost = Tools.TryGetDictValue(Parameters, "ssoHost");
+            Params.OEHost = Tools.TryGetDictValue(Parameters, "oeHost");
 
-            var ssoPort = Tools.TryGetDictValue(Parameters, "ssoPort");
+            var ssoPort = Tools.TryGetDictValue(Parameters, "oePort");
             if (ssoPort != null)
             {
-                Params.SSOPort = ssoPort;
+                Params.OEPort = ssoPort;
             }
             var useHttps = Tools.TryGetDictValue(Parameters, "useHttps");
             if (useHttps != null && useHttps.ToLower() == "true")
@@ -78,14 +78,14 @@ namespace userScript
                               "-u           | /u           REQUIRED: Username\n" +
                               "-p           | /p           REQUIRED: Password\n" +
                               "-json        | /json        REQUIRED: Path to json file\n" +
-                              "-ssoHost     | /ssoHost     OPTIONAL: SSO host. Default same as SBM host.\n" +
-                              "-ssoPort     | /ssoPort     OPTIONAL: SSO port. Default 8085\n" +
+                              "-oeHost      | /oeHost      OPTIONAL: SSO host. Default same as SBM host.\n" +
+                              "-oePort      | /oePort      OPTIONAL: SSO port. Default 8085\n" +
                               "-useHttps    | /useHttps    OPTIONAL: true | false. Default false\n" +
                               "\n\n" +
                               "Example:\n/sbmHostPort stl-qa-oalmt1 /u admin /p \"\" -json rlc52users.json" +
                               "\n\nand some more complicated:\n" +
-                              "-sbmHostPort orl-qa-vstst94.qa.ldaptest.net:443 -u LDAP_User1 -p !Mtdnp1111 -ssoHost orl-qa-vstst97.qa.ldaptest.net -ssoPort 8243 -useHttps true -json rlc52users.json" +
-                              "\n\nSupported SBM versions from 10.1.3.1 to 10.1.5.2" +
+                              "-sbmHostPort orl-qa-vstst94.qa.ldaptest.net:443 -u LDAP_User1 -p !Mtdnp1111 -oeHost orl-qa-vstst97.qa.ldaptest.net -oePort 8243 -useHttps true -json rlc52users.json" +
+                              "\n\nWorks with SBM: from 10.1.3.1 to 10.1.5.2 and probably even more." +
                               "\nmgrybyk@serena.com"
                 );
         }

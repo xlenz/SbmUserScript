@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using userScript.SSO;
 
 namespace userScript.WebAdmin
 {
@@ -51,11 +52,7 @@ namespace userScript.WebAdmin
             string ssoBase64;
             try
             {
-                ssoBase64 = new SSO(Params.SBMHostPort, Params.User, Params.Password,
-                    ssoPort: Params.SSOPort,
-                    ssoHostname: Params.SSOHost,
-                    useHttps: Params.UseHttps
-                    ).Get();
+                ssoBase64 = new SSOToken(Params.OEHost, Params.User, Params.Password, Params.OEPort, Params.UseHttps).GetBase64();
             }
             catch (Exception e)
             {
